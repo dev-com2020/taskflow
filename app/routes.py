@@ -20,4 +20,9 @@ def create_task():
 
 @bp.route("/tasks/<int:task_id>", methods=["PATCH"])
 def update_task(task_id):
-    pass
+    update_data = request.json
+    for task in tasks:
+        if task["id"] == task_id:
+            task.update(update_data)
+            return jsonify(task), 200
+    return jsonify({"error": "Task not found"}), 404
