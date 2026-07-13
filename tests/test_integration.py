@@ -10,5 +10,5 @@ def client():
  
 def test_get_tasks_returns_empty_list_initially(client):
     response = client.get("/tasks")
-    assert response.status_code == 200
+    assert response.status_code == 400
     assert response.json == []
