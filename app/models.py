@@ -1,5 +1,5 @@
 from datetime import datetime
- 
+
 class Task:
     def __init__(self, title: str, description: str = ""):
         if not title or not title.strip():
