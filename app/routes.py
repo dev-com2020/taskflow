@@ -8,7 +8,8 @@ tasks = []
 
 @bp.route("/tasks", methods=["GET"])
 def get_tasks():
-    pass
+    get_tasks = [{"id": i + 1, "content": task} for i, task in enumerate(tasks)]
+    return jsonify(get_tasks)
 
 
 @bp.route("/tasks", methods=["POST"])
