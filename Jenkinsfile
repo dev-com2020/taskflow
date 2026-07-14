@@ -21,7 +21,7 @@ pipeline {
         stage('Run tests') {
             steps {
                 sh '''
-                    .venv/bin/python -m pytest -v
+                    .venv/bin/python -m pytest tests/test_unit.py tests/test_integration.py -v --cov=app
                 '''
             }
         }
@@ -29,8 +29,8 @@ pipeline {
         stage('Build Docker image') {
             steps {
                 sh '''
-                    docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
-                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
+                    sudo docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                    sudo docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
                 '''
             }
         }
@@ -38,9 +38,9 @@ pipeline {
         stage('Run container') {
             steps {
                 sh '''
-                    docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
+                    sudo docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
 
-                    docker run -d \
+                    sudo docker run -d \
                         --name ${CONTAINER_NAME} \
                         -p 8000:8000 \
                         ${IMAGE_NAME}:${BUILD_NUMBER}
@@ -52,16 +52,16 @@ pipeline {
     post {
         success {
             echo 'Pipeline zakończony powodzeniem'
-            sh 'docker ps'
+            sh 'sudo docker ps'
         }
 
         failure {
             echo 'Pipeline zakończony niepowodzeniem'
-            sh 'docker ps -a || true'
+            sh 'sudo docker ps -a || true'
         }
 
         always {
-            sh 'docker images | head -n 20 || true'
+            sh 'sudo docker images | head -n 20 || true'
         }
     }
 }
